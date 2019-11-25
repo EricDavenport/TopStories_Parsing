@@ -21,6 +21,7 @@ class NewsFeedController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.dataSource = self
+        tableView.delegate = self
         loadData()
     }
     
@@ -33,13 +34,24 @@ class NewsFeedController: UIViewController {
 
 extension NewsFeedController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return headlines.count
+        return headlines.count    // 39 headlines
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "headlineCell", for: indexPath)
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "headlineCell", for: indexPath) as? HeadlineCell else {
+            fatalError("Unable to deque properly")
+        }
+        // get object at the current indexPath
+        let currentHeadline = headlines[indexPath.row]
         
+        cell.configureCell(for: currentHeadline)
         
         return cell
+    }
+}
+
+extension NewsFeedController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 180
     }
 }
